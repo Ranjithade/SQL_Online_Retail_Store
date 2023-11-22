@@ -55,3 +55,9 @@ select * from products_above_average_price;
 SELECT *
 FROM product
 WHERE category='laptop';
+
+--Get customer details along with their orders
+
+SELECT customer_details.*, order_details.order_id, order_details.order_date, order_details.total_value
+FROM customer_details
+JOIN order_details ON customer_details.customer_id = order_details.customer_id;
