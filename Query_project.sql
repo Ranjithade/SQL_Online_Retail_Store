@@ -113,3 +113,91 @@ SELECT stores.*, AVG(stores.store_rating) AS average_rating
 FROM stores
 GROUP BY stores.store_id
 HAVING AVG(stores.store_rating) > 4.5;
+
+--top-spending customers
+
+SELECT customer_details.customer_id, customer_details.first_name, customer_details.last_name, SUM(order_details.total_value) AS total_spent
+FROM customer_details
+JOIN order_details ON customer_details.customer_id = order_details.customer_id
+GROUP BY customer_details.customer_id
+ORDER BY total_spent DESC
+LIMIT 5;
+
+--Get a list of unique email addresses
+
+SELECT DISTINCT e_mail_address FROM customer_details;
+
+--Identify customers with similar email domains
+
+SELECT SUBSTRING(e_mail_address FROM POSITION('@' IN e_mail_address) + 1) AS email_domain,
+       COUNT(*) AS customer_count
+FROM customer_details
+GROUP BY email_domain
+HAVING COUNT(*) > 1;
+
+--Delete customers who do not have an email address
+
+DELETE FROM customer_details
+WHERE e_mail_address IS NULL OR e_mail_address = '';
+
+--Find the customers with the highest and lowest total spending
+
+SELECT customer_id, first_name, last_name, total_value
+FROM (
+    SELECT customer_details.customer_id, first_name, last_name, COALESCE(SUM(order_details.total_value), 0) AS total_spent
+    FROM customer_details
+    LEFT JOIN order_details ON customer_details.customer_id = order_details.customer_id
+    GROUP BY customer_details.customer_id, first_name, last_name
+    ORDER BY total_value DESC
+) AS customer_spending
+LIMIT 1;
+Union All
+SELECT customer_id, first_name, last_name, total_value
+FROM (
+    SELECT customer_details.customer_id, first_name, last_name, COALESCE(SUM(order_details.total_value), 0) AS total_spent
+    FROM customer_details
+    LEFT JOIN order_details ON customer_details.customer_id = order_details.customer_id
+    GROUP BY customer_details.customer_id, first_name, last_name
+    ORDER BY total_value ASC
+) AS customer_spending
+LIMIT 1;
+
+--Find customers who haven't placed any orders in the last 6 months
+
+SELECT customer_details.*
+FROM customer_details
+LEFT JOIN order_details ON customer_details.customer_id = order_details.customer_id
+WHERE order_details.order_date IS NULL OR order_details.order_date < CURRENT_DATE - INTERVAL '6 months';
+
+--Find customers with more than one email address:
+
+SELECT customer_id, COUNT(DISTINCT e_mail_address) AS email_count
+FROM customer_details
+GROUP BY customer_id
+HAVING COUNT(DISTINCT e_mail_address) > 1;
+
+--Update the salutation to "Mr." for all male customers
+
+UPDATE customer_details
+SET salutation = 'Mr.'
+WHERE gender = 'Male';
+
+--Identify customers with similar contact numbers
+
+SELECT contact_number, COUNT(*) AS customer_count
+FROM customer_details
+GROUP BY contact_number
+HAVING COUNT(*) > 1;
+
+--Select customers with specific range of order count
+
+SELECT customer_id, first_name, last_name, order_count
+FROM (
+    SELECT customer_details.customer_id, first_name, last_name, COALESCE(COUNT(order_details.order_id), 0) AS order_count
+    FROM customer_details
+    LEFT JOIN order_details ON customer_details.customer_id = order_details.customer_id
+    GROUP BY customer_details.customer_id, first_name, last_name
+) AS customer_order_counts
+WHERE order_count BETWEEN 2 AND 5;
+
+
