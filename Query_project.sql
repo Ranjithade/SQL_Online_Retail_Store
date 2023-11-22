@@ -67,3 +67,10 @@ JOIN order_details ON customer_details.customer_id = order_details.customer_id;
 UPDATE customer_address
 SET address_1 = '456 Oak St, Townsville'
 WHERE customer_id = 1;
+
+--Total Revenue for the current month
+
+SELECT SUM(order_item.quantity_of_items * order_item.price_of_item) AS total_revenue
+FROM order_details
+JOIN order_item ON order_details.order_id = order_item.order_id
+WHERE EXTRACT(MONTH FROM order_details.order_date) = EXTRACT(MONTH FROM CURRENT_DATE);
