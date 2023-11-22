@@ -21,5 +21,6 @@ Relationships
 
 Create Database
 
+
 -Table.sql: Create tables for entities and relationships above.
 -query.sql: instruction that is been performed on the table to fetch details or modify the table 
