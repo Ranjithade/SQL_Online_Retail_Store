@@ -1,3 +1,13 @@
+#Project Title: Online Retail Store
+
+#Project Description : This project is for online retail store management system implemented using PostgreSQL.
+
+#Installation
+
+1. Clone the repository.
+2. Install the required dependencies.
+3. Set up the database according to the provided schema.
+
 Entities
 
 - customer_details (customer_id, first_namename, last_name, salutation, contact_number, e_mail_address, gender)
