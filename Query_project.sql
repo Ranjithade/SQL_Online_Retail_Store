@@ -61,3 +61,9 @@ WHERE category='laptop';
 SELECT customer_details.*, order_details.order_id, order_details.order_date, order_details.total_value
 FROM customer_details
 JOIN order_details ON customer_details.customer_id = order_details.customer_id;
+
+--Update customer address
+
+UPDATE customer_address
+SET address_1 = '456 Oak St, Townsville'
+WHERE customer_id = 1;
