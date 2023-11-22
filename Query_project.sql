@@ -74,3 +74,8 @@ SELECT SUM(order_item.quantity_of_items * order_item.price_of_item) AS total_rev
 FROM order_details
 JOIN order_item ON order_details.order_id = order_item.order_id
 WHERE EXTRACT(MONTH FROM order_details.order_date) = EXTRACT(MONTH FROM CURRENT_DATE);
+
+--Get a list of products with zero stock
+
+SELECT * FROM product
+WHERE product_quantity = 0;
