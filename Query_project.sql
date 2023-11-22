@@ -79,3 +79,37 @@ WHERE EXTRACT(MONTH FROM order_details.order_date) = EXTRACT(MONTH FROM CURRENT_
 
 SELECT * FROM product
 WHERE product_quantity = 0;
+
+--Update stock quantity after shipping an order
+
+UPDATE store_stock
+SET quantity = quantity - (
+    SELECT quantity_of_items
+    FROM order_item
+    WHERE order_id = 1
+)
+WHERE product_id IN (
+    SELECT product_id
+    FROM order_item
+    WHERE order_id = 1
+);
+
+--Search for products containing the term "laptop"
+
+SELECT * FROM product
+WHERE LOWER(product_name) LIKE '%laptop%';
+
+--Identify customers who have placed more than two orders
+
+SELECT customer_details.*, COUNT(order_details.order_id) AS order_count
+FROM customer_details
+LEFT JOIN order_details ON customer_details.customer_id = order_details.customer_id
+GROUP BY customer_details.customer_id
+HAVING COUNT(order_details.order_id) > 2;
+
+--List stores with an average rating above 4.5
+
+SELECT stores.*, AVG(stores.store_rating) AS average_rating
+FROM stores
+GROUP BY stores.store_id
+HAVING AVG(stores.store_rating) > 4.5;
