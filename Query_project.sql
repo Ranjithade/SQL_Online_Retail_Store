@@ -200,4 +200,10 @@ FROM (
 ) AS customer_order_counts
 WHERE order_count BETWEEN 2 AND 5;
 
+--the lifetime value of customers based on their total spending
 
+SELECT customer_id, SUM(order_details.total_value) AS lifetime_value
+FROM order_details
+JOIN customer_details ON customer_details.customer_id = order_details.customer_id
+GROUP BY first_name, last_name
+ORDER BY lifetime_value DESC;
